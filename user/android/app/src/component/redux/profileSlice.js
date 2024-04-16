@@ -3,7 +3,6 @@ import { createSlice } from '@reduxjs/toolkit';
 const profileInitialState = {
   profile: null,
   profiles: [],
-  repos: [],
   loading: true,
   error: {},
 };
@@ -30,11 +29,6 @@ const profileSlice = createSlice({
       state.profiles = action.payload;
       state.loading = false;
     },
-    getRepos: (state, action) => {
-      // Handle get repos logic
-      state.repos = action.payload;
-      state.loading = false;
-    },
     profileError: (state, action) => {
       // Handle profile error logic
       state.error = action.payload;
@@ -57,7 +51,6 @@ export const {
   deleteAccount,
   getProfile,
   getProfiles,
-  getRepos,
   profileError,
   updateProfile,
   resetProfile,

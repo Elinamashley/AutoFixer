@@ -1,6 +1,6 @@
 import { configureStore} from '@reduxjs/toolkit';
 import logger from 'redux-logger';
-import rootReducer from '../redux/rootReducer'; // Update the path
+import rootReducer from './rootReducer'; // Update the path
 import {thunk} from 'redux-thunk'; // Import the thunk function directly
 
 

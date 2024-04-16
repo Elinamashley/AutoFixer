@@ -8,10 +8,35 @@ import {
   Image,
   View,
 } from 'react-native';
+import { loginActions } from '../../api/actions/authAction';
+import { useDispatch } from 'react-redux';
+import Toast from 'react-native-toast-message';
 
 const LoginPage = ({ navigation }) => {
+  const dispatch = useDispatch()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+
+  const onSubmit = async () => {
+    try {
+      const requestData = { email, password };
+     
+   let response=  await dispatch(loginActions(requestData));
+   console.log(response.success,"SUCESSSSSSSSSSS");
+   if(response.success===true){
+    Toast.show({
+      type: 'success',
+      text1: 'Success',
+      text2: 'Login successful',
+    })
+    navigation.navigate('Dashboard')
+  }
+    } catch (error) {
+      // console.error('Login failed1', error);
+    }
+  };
+
 
   const handleLoginPress = () => {
     navigation.navigate('Signup');
@@ -45,7 +70,7 @@ const LoginPage = ({ navigation }) => {
           placeholder="Password"
           placeholderTextColor="#2D2F34"
         />
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Login Pressed')}>
+        <TouchableOpacity style={styles.button} onPress={onSubmit}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
         <Text style={styles.myText}>

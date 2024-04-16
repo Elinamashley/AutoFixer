@@ -8,6 +8,8 @@ import {
   Image,
   ImageBackground,
 } from 'react-native';
+import { signupActions } from '../../api/actions/authAction';
+import { useDispatch } from 'react-redux';
 
 const SignupPage = ({ navigation }) => {
   const [form, setForm] = useState({
@@ -28,6 +30,31 @@ const SignupPage = ({ navigation }) => {
     }));
   };
 
+
+  const dispatch = useDispatch()
+  
+
+
+  const onSubmit = async () => {
+    try {
+      const requestData = {
+        name: form.name, 
+        email: form.email, 
+        password: form.password
+      };
+      let response = await dispatch(signupActions(requestData));
+      if (response.status === true) {
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'Signup successful',
+        });
+      }
+    } catch (error) {
+      console.error('Signup failed', error);
+    }
+  };
+  
   return (
     <ImageBackground
       source={require('../../img/login.webp')} // Replace with your background image path
@@ -73,7 +100,7 @@ const SignupPage = ({ navigation }) => {
         />
         <TouchableOpacity
           style={styles.button}
-          onPress={() => console.log('Signup Pressed', form)}>
+          onPress={onSubmit}>
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
         <Text style={styles.myText}>
