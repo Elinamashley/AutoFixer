@@ -1,6 +1,6 @@
 const express = require("express");
 const { check } = require("express-validator");
-const auth = require("../moddleware/auth");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -39,7 +39,7 @@ router.post(
     check("shopName", "Shop name is required").notEmpty(),
     check("typeOfService", "Type of service is required").notEmpty(),
     check("city", "City is required").notEmpty(),
-    check("address", "Address is required").notEmpty(),
+    check("address", "Address is required").notEmpty(), 
   ],
   createOrUpdateProfile
 );

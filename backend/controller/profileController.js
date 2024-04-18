@@ -7,7 +7,6 @@ const Profile = require("../model/ProfileModel");
 
 const createOrUpdateProfile = async (req, res) => {
   const { shopName, typeOfService, city, address, location } = req.body;
-
   // Build profile object
   const profileFields = {};
   profileFields.user = req.user.id; // Assuming the user ID is available here
@@ -73,24 +72,7 @@ const getCurrentUserProfile = async (req, res) => {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
-};
-
-// Generate a unique token for password reset
-const generateResetToken = async (user) => {
-  try {
-    const resetToken = crypto.randomBytes(20).toString("hex");
-    user.resetPasswordToken = crypto
-      .createHash("sha256")
-      .update(resetToken)
-      .digest("hex");
-    user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // Token expires in 10 minutes
-    await user.save();
-    return resetToken;
-  } catch (error) {
-    console.error("Error generating reset token:", error);
-    throw error; // Propagate the error to the calling function
-  }
-};
+}
 
 // Controller to request password reset
 const requestPasswordReset = async (req, res) => {

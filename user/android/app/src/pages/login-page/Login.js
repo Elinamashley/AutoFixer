@@ -7,13 +7,16 @@ import {
   ImageBackground,
   Image,
   View,
+  ActivityIndicator
 } from 'react-native';
 import { loginActions } from '../../api/actions/authAction';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Toast from 'react-native-toast-message';
 
 const LoginPage = ({ navigation }) => {
   const dispatch = useDispatch()
+  const loading = useSelector(state => state.auth.loading);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -23,7 +26,6 @@ const LoginPage = ({ navigation }) => {
       const requestData = { email, password };
      
    let response=  await dispatch(loginActions(requestData));
-   console.log(response.success,"SUCESSSSSSSSSSS");
    if(response.success===true){
     Toast.show({
       type: 'success',
@@ -41,6 +43,14 @@ const LoginPage = ({ navigation }) => {
   const handleLoginPress = () => {
     navigation.navigate('Signup');
   };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <ImageBackground

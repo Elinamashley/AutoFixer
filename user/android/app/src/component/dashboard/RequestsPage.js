@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, FlatList,ActivityIndicator} from 'react-native';
 import {fetchCurrentUserProfile} from '../../api/actions/profileAction';
-import ProfilePage from './ProfilePage';
 
 // List of request types
 const requestTypes = [
@@ -29,7 +28,8 @@ const requests = Array.from({length: 10}, (_, index) => ({
 
 const RequestPage = ({navigation}) => {
   const dispatch = useDispatch();
-  const profile = useSelector(state => state.profile.profile);
+  const {profile,loading} = useSelector(state => state.profile);
+  console.log(profile,"prodile")
 
   useEffect(() => {
     dispatch(fetchCurrentUserProfile());
@@ -38,6 +38,14 @@ const RequestPage = ({navigation}) => {
   const handleAddProfilePress = () => {
     navigation.navigate('AddEditProfile');
   };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   if (!profile) {
     return (

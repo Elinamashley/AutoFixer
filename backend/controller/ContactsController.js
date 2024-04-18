@@ -1,7 +1,6 @@
 // controllers/contactsController.js
 const { validationResult } = require('express-validator');
 const Contact = require('../model/ContactsModel');
-const Group = require('../model/GroupsModel');
 const mongoose = require('mongoose');
 
 exports.createContact = async (req, res) => {
@@ -25,7 +24,7 @@ exports.createContact = async (req, res) => {
       }
     }
 
-    // Construct the contact data, including userId
+    // Construct the contact data, including userId 
     const contactData = {
       ...otherData,
       phoneNumber,

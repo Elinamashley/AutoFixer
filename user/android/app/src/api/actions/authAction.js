@@ -45,8 +45,6 @@ export const loginActions = (userData) => async (dispatch) => {
 
 // Async action using Redux Thunk for API call
 export const signupActions = (userData) => async (dispatch) => {
-    console.log(userData,"signup data here")
-
   dispatch(setLoading(true));
   try {
     await api.post("user/create-user", userData);

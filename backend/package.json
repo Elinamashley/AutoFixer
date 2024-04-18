@@ -1,5 +1,5 @@
 {
-  "name": "wallet",
+  "name": "mechanic",
   "version": "1.0.0",
   "description": "a token wallet",
   "main": "server.js",
@@ -11,8 +11,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@shopify/koa-shopify-auth": "^5.0.3",
-    "@shopify/shopify-api": "^9.0.1",
     "axios": "^1.6.8",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
@@ -26,10 +24,7 @@
     "mongoose": "^8.2.2",
     "multer": "^1.4.5-lts.1",
     "node-cron": "^3.0.3",
-    "nodemailer": "^6.9.7",
-    "nodemon": "^3.0.1",
-    "paystack": "^2.0.1",
-    "shopify-api-node": "^3.12.7",
-    "shopify-node": "^1.0.0"
+    "nodemon": "^3.0.1"
+   
   }
 }

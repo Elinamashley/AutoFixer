@@ -5,14 +5,10 @@ const bodyParser = require('body-parser');
 const usersDetails = require("./routes/userRoute.js");
 const userProfile = require("./routes/profileRoute");
 const userAuth = require("./routes/authRoute.js");
-const payStack = require("./routes/paystackRoute.js");
-const contactsRoutes = require("./routes/contactsRoute.js")
-const groupsRoute = require("./routes/groupsRoute.js")
-const messagesRoutes = require("./routes/messagesRoute.js") 
+
  
 
 const cors = require("cors");
-const scheduleBirthdayReminder = require("./utils/birthdayMessage.js");
 
 const app = express();
 dotenv.config();
@@ -33,16 +29,11 @@ app.use(
 app.use(bodyParser.json());
 
 //birthday reminder
-scheduleBirthdayReminder()
 // Define routes 
 app.use("/api/v1/user", usersDetails);
-app.use("/api/v1/payment", payStack);
 app.use("/api/v1/password", userProfile); 
 app.use("/api/v1/auth/user", userAuth);
 app.use("/api/v1/profiles", userProfile);
-app.use('/api/v1/contacts', contactsRoutes);
-app.use('/api/v1/contacts/groups', groupsRoute);
-app.use('/api/v1/message', messagesRoutes); 
 
 
 

@@ -7,9 +7,10 @@ import {
   StyleSheet,
   Image,
   ImageBackground,
+  ActivityIndicator
 } from 'react-native';
 import { signupActions } from '../../api/actions/authAction';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const SignupPage = ({ navigation }) => {
   const [form, setForm] = useState({
@@ -32,6 +33,8 @@ const SignupPage = ({ navigation }) => {
 
 
   const dispatch = useDispatch()
+  const loading = useSelector(state => state.auth.loading);
+
   
 
 
@@ -43,17 +46,26 @@ const SignupPage = ({ navigation }) => {
         password: form.password
       };
       let response = await dispatch(signupActions(requestData));
-      if (response.status === true) {
+      if (response.success===true) {
         Toast.show({
           type: 'success',
           text1: 'Success',
           text2: 'Signup successful',
         });
+        navigation.navigate('Login')
       }
     } catch (error) {
-      console.error('Signup failed', error);
     }
   };
+
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
   
   return (
     <ImageBackground
