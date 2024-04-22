@@ -1,18 +1,20 @@
-import {useState, useEffect, useLayoutEffect} from 'react';
+import { useDispatch } from 'react-redux';
+import { createOrUpdateProfile } from '../../api/actions/profileAction';
+import Toast from 'react-native-toast-message';
 import {
   View,
-  TextInput,
   Text,
-  TouchableOpacity,
+  TextInput,
+  Button,
   StyleSheet,
-  Image,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
 } from 'react-native';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {useDispatch} from 'react-redux';
-import {createOrUpdateProfile} from '../../api/actions/profileAction';
-import Toast from 'react-native-toast-message';
+import { requestLocationPermission } from '../../utils/requestPermision';
+import { useEffect, useLayoutEffect, useState } from 'react';
 
-const AddEditProfilePage = ({navigation, route}) => {
+const AddEditProfilePage = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     shopName: '',
@@ -20,12 +22,12 @@ const AddEditProfilePage = ({navigation, route}) => {
     city: '',
     address: '',
     location: '',
-    avatar: '', // Assume avatar is part of formData for image edit
+    avatar: '',
   });
 
   useEffect(() => {
     if (route.params?.profile) {
-      setFormData({...route.params.profile});
+      setFormData({ ...route.params.profile });
     }
   }, [route.params?.profile]);
 
@@ -42,6 +44,9 @@ const AddEditProfilePage = ({navigation, route}) => {
     }));
   };
 
+  const handleFetchLocation = () => {
+    requestLocationPermission(location => handleInputChange('location', location));
+  };
   const handleSelectImage = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.assets && response.assets.length > 0) {
@@ -52,8 +57,8 @@ const AddEditProfilePage = ({navigation, route}) => {
   };
 
   const handleSaveProfile = async () => {
+    console.log(formData,"the form data")
     try {
-      // You might need to handle image upload separately or adjust your profile action accordingly
       let response = await dispatch(createOrUpdateProfile(formData));
       if (response.success === true) {
         Toast.show({
@@ -73,12 +78,11 @@ const AddEditProfilePage = ({navigation, route}) => {
       <Text style={styles.pageHeader}>
         {route.params?.profile ? 'Edit Your Profile' : 'Create Your Profile'}
       </Text>
-
+      
       {formData.avatar ? (
-        <Image source={{uri: formData.avatar}} style={styles.avatar} />
+        <Image source={{ uri: formData.avatar }} style={styles.avatar} />
       ) : null}
 
-      {/* Allow image selection when editing */}
       {route.params?.profile && (
         <TouchableOpacity style={styles.imageButton} onPress={handleSelectImage}>
           <Text style={styles.imageButtonText}>Select Image</Text>
@@ -115,6 +119,7 @@ const AddEditProfilePage = ({navigation, route}) => {
         onChangeText={text => handleInputChange('location', text)}
         placeholder="Location (Optional)"
       />
+      <Button title="Fetch Location" onPress={handleFetchLocation} color="#062607" />
       <TouchableOpacity style={styles.button} onPress={handleSaveProfile}>
         <Text style={styles.buttonText}>Save Profile</Text>
       </TouchableOpacity>

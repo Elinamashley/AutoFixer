@@ -7,20 +7,30 @@ const Profile = require("../model/ProfileModel");
 
 const createOrUpdateProfile = async (req, res) => {
   const { shopName, typeOfService, city, address, location } = req.body;
+
   // Build profile object
-  const profileFields = {};
-  profileFields.user = req.user.id; // Assuming the user ID is available here
-  if (shopName) profileFields.shopName = shopName;
-  if (typeOfService) profileFields.typeOfService = typeOfService;
-  if (city) profileFields.city = city;
-  if (address) profileFields.address = address;
-  if (location) profileFields.location = location;
+  const profileFields = {
+    user: req.user.id, // Assuming the user ID is available here
+    shopName,
+    typeOfService,
+    city,
+    address,
+  };
+
+  // Convert location string "lat, lng" to GeoJSON format for MongoDB
+  if (location) {
+    const [latitude, longitude] = location.split(', ').map(Number);
+    profileFields.location = {
+      type: "Point",
+      coordinates: [longitude, latitude] // MongoDB expects [longitude, latitude]
+    };
+  }
 
   try {
     let profile = await Profile.findOne({ user: req.user.id });
 
     if (profile) {
-      // Update
+      // Update existing profile
       profile = await Profile.findOneAndUpdate(
         { user: req.user.id },
         { $set: profileFields },
@@ -29,7 +39,7 @@ const createOrUpdateProfile = async (req, res) => {
       return res.json(profile);
     }
 
-    // Create
+    // Create new profile if not exist
     profile = new Profile(profileFields);
     await profile.save();
     res.json(profile);
@@ -38,6 +48,7 @@ const createOrUpdateProfile = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
+
 
 
 // Assuming the Profile model is imported at the top

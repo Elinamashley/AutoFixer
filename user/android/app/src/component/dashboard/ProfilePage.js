@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 const ProfilePage = ({ navigation }) => {
  const dispatch = useDispatch()
   const profile = useSelector(state => state.profile.profile);
+  console.log(profile,"mailprofile")
 
   console.log(profile,"the profile inside")
   const handleEditPress = () => {

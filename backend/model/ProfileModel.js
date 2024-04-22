@@ -2,27 +2,23 @@ const mongoose = require("mongoose");
 
 const ProfileSchema = new mongoose.Schema({
   user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "user",
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "User",
   },
-  shopName: {
-    type: String,
-    required: true,
-  },
-  typeOfService: {
-    type: String,
-    required: true,
-  },
-  city: {
-    type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
+  shopName: String,
+  typeOfService: String,
+  city: String,
+  address: String,
   location: {
-    type: String,
+    type: {
+      type: String,
+      enum: ['Point'],
+      required: true
+    },
+    coordinates: {
+      type: [Number], 
+      required: true
+    }
   },
   date: {
     type: Date,
@@ -30,4 +26,5 @@ const ProfileSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("profile", ProfileSchema);
+ProfileSchema.index({ location: '2dsphere' });
+module.exports = mongoose.model("Profile", ProfileSchema);

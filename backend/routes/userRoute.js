@@ -24,6 +24,7 @@ router.put(
   [
     check("name", "Name is required").notEmpty(),
     check("email", "Enter a valid email").isEmail(),
+    check('userType', 'User type is invalid').isIn(['mechanic', 'user', 'admin']),
   ],
   updateUserProfile
 );

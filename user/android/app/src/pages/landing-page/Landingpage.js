@@ -1,16 +1,19 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  Modal
+} from 'react-native';
 
-const LandingPage = ({navigation}) => {
+const LandingPage = ({ navigation }) => {
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
+  const [signupModalVisible, setSignupModalVisible] = useState(false);
 
-    const handleLoginPress = () => {
-        navigation.navigate('Login');
-      };
-    
-      const handleSignupPress = () => {
-        navigation.navigate('Signup'); 
-      };
-      
   return (
     <ScrollView
       contentContainerStyle={styles.scrollViewContainer}
@@ -24,18 +27,78 @@ const LandingPage = ({navigation}) => {
         <View style={styles.landingInner}>
           <Text style={styles.xLarge}>AutoFixer</Text>
           <Text style={styles.lead}>
-            Get instant help when you need it most. Connect to the nearest towing service or Mechanic when you need one
+            Get instant help when you need it most. Connect to the nearest towing service or mechanic when you need one.
           </Text>
           <View style={styles.buttons}>
-            <TouchableOpacity style={styles.primaryButton}  onPress={handleSignupPress}>
+            <TouchableOpacity style={styles.primaryButton} onPress={() => setSignupModalVisible(true)}>
               <Text style={styles.buttonText}>Sign Up</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.lightButton}  onPress={handleLoginPress}>
+            <TouchableOpacity style={styles.lightButton} onPress={() => setLoginModalVisible(true)}>
               <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
+      {/* Login Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={loginModalVisible}
+        onRequestClose={() => {
+          setLoginModalVisible(!loginModalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Login as:</Text>
+            <TouchableOpacity style={styles.modalButton} onPress={() => {
+                navigation.navigate('Login', { userType: 'mechanic' });
+                setLoginModalVisible(false);
+              }}>
+              <Text style={styles.buttonText}>Mechanic</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={() => {
+                navigation.navigate('Login', { userType: 'user' });
+                setLoginModalVisible(false);
+              }}>
+              <Text style={styles.buttonText}>User</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setLoginModalVisible(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      {/* Signup Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={signupModalVisible}
+        onRequestClose={() => {
+          setSignupModalVisible(!signupModalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Sign up as:</Text>
+            <TouchableOpacity style={styles.modalButton} onPress={() => {
+                navigation.navigate('Signup', { userType: 'mechanic' });
+                setSignupModalVisible(false);
+              }}>
+              <Text style={styles.buttonText}>Mechanic</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={() => {
+                navigation.navigate('Signup', { userType: 'user' });
+                setSignupModalVisible(false);
+              }}>
+              <Text style={styles.buttonText}>User</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setSignupModalVisible(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -102,7 +165,57 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalButton: {
+    backgroundColor: '#062607',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    backgroundColor: '#999',
+    padding: 10,
+    marginTop: 20,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
 });
 
-export default LandingPage;
 
+export default LandingPage;

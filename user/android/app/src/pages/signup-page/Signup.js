@@ -12,7 +12,8 @@ import {
 import { signupActions } from '../../api/actions/authAction';
 import { useDispatch, useSelector } from 'react-redux';
 
-const SignupPage = ({ navigation }) => {
+const SignupPage = ({ navigation, route }) => {
+  const userType = route.params?.userType || 'user';
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -20,9 +21,12 @@ const SignupPage = ({ navigation }) => {
     confirmPassword: '',
   });
 
-  const handleLoginPress = () => {
-    navigation.navigate('Login');
-  };
+  const dispatch = useDispatch()
+  const loading = useSelector(state => state.auth.loading);
+  const backgroundImg = userType === 'mechanic' ? require('../../img/login.webp') : require('../../img/user.webp');
+  const textUser = userType === "mechanic" ? "Kindly register as a mechanic to continue":"Kindly register as a user to continue"
+
+ 
 
   const handleInputChange = (inputName, value) => {
     setForm(currentForm => ({
@@ -31,30 +35,24 @@ const SignupPage = ({ navigation }) => {
     }));
   };
 
-
-  const dispatch = useDispatch()
-  const loading = useSelector(state => state.auth.loading);
-
-  
-
-
   const onSubmit = async () => {
     try {
       const requestData = {
-        name: form.name, 
-        email: form.email, 
-        password: form.password
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        userType: userType
       };
       let response = await dispatch(signupActions(requestData));
-      if (response.success===true) {
-        Toast.show({
-          type: 'success',
-          text1: 'Success',
-          text2: 'Signup successful',
-        });
-        navigation.navigate('Login')
+      console.log("Signup response", response); // Check what the response from the action is
+      if (response && response.success === true) {
+        navigation.navigate('Login');
+      } else {
+        // Handle the case where signup is not successful
+        console.error("Signup failed:", response);
       }
     } catch (error) {
+      console.error("Signup error:", error);
     }
   };
 
@@ -66,19 +64,19 @@ const SignupPage = ({ navigation }) => {
       </View>
     );
   }
-  
+
   return (
     <ImageBackground
-      source={require('../../img/login.webp')} // Replace with your background image path
+      source={backgroundImg}
       style={styles.container}
       resizeMode="cover"
     >
       <View style={styles.overlay}>
         <Image
           style={styles.logo}
-          source={require('../../img/meUser.webp')} // Replace with your logo URL
+          source={require('../../img/meUser.webp')}
         />
-        <Text style={styles.text}>Sign up as a mechanic to continue</Text>
+        <Text style={styles.text}>{textUser}</Text>
         <TextInput
           style={styles.input}
           onChangeText={value => handleInputChange('name', value)}
@@ -117,7 +115,7 @@ const SignupPage = ({ navigation }) => {
         </TouchableOpacity>
         <Text style={styles.myText}>
           Already have an account?{' '}
-          <Text onPress={handleLoginPress} style={styles.linkText}>
+          <Text onPress={() => navigation.navigate('Login', { userType: userType })} style={styles.linkText}>
             Log in
           </Text>
         </Text>

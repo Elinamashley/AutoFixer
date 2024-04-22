@@ -16,7 +16,7 @@ const createUserDetails = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { name, email, password } = req.body;
+  const { name, email, password, userType } = req.body;
 
   try {
     // Check if the user already exists
@@ -50,6 +50,7 @@ const createUserDetails = async (req, res) => {
       email,
       password: hashedPassword, // Use the encrypted password
       avatar,
+      userType
     });
 
     // Save the new user
@@ -74,7 +75,7 @@ const updateUserProfile = async (req, res) => {
   upload(req, res, async (err) => {
     if(err){
       // Handle errors
-      res.status(500).json({error: err});
+      res.status(500).json({error: err}); 
     } else {
       // Proceed with user update
       const userId = req.params.id;

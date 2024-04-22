@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const usersDetails = require("./routes/userRoute.js");
 const userProfile = require("./routes/profileRoute");
 const userAuth = require("./routes/authRoute.js");
+const userRequests = require("./routes/requestRoute")
 
  
 
@@ -34,6 +35,8 @@ app.use("/api/v1/user", usersDetails);
 app.use("/api/v1/password", userProfile); 
 app.use("/api/v1/auth/user", userAuth);
 app.use("/api/v1/profiles", userProfile);
+app.use("/api/v1/requests", userRequests);
+
 
 
 

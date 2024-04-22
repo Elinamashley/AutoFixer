@@ -102,7 +102,7 @@ import DashboardHeaderTabs from './DashboardHeaderTabs';
 const DashboardPage = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>AutoFixer</Text>
+      <Text style={styles.logo}>AutoFixer-Mechanic</Text>
       <DashboardHeaderTabs />
     </View>
   );

@@ -1,7 +1,4 @@
-
-const mongoose= require('mongoose');
-
-
+const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -17,19 +14,20 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  
   avatar: {
     type: String,
+  },
+  userType: {
+    type: String,
+    enum: ['mechanic', 'user', 'admin'],
+    required: true,
   },
   date: {
     type: Date,
     default: Date.now,
   },
- 
- 
 });
 
 const User = mongoose.model("user", UserSchema);
 
 module.exports = User;
-
