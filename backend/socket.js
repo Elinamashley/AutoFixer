@@ -61,3 +61,5 @@ server.on('error', (error) => {
             throw error;
     }
 });
+
+module.exports = { io, server };

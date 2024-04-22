@@ -110,7 +110,9 @@ export const findMechanics = (location, serviceType) => async (dispatch) => {
 };
 
 
-export const assignMechanic = (requestId, mechanicId) => async (dispatch) => {
+export const assignMechanic = (requestI) => async (dispatch) => {
+  const {requestId,mechanicId}=requestI
+  console.log(requestId,mechanicId)
   try {
     const response = await api.put('/requests/assign-mechanic', { requestId, mechanicId });
     dispatch(updateRequest(response.data)); // Assuming you have an action to update the local state

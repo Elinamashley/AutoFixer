@@ -10,12 +10,13 @@ const UserRequestPage = ({ navigation }) => {
     const dispatch = useDispatch();
     const [mechanics, setMechanics] = useState([]);
     const [requestSubmitted, setRequestSubmitted] = useState(false);
-
+    const [requestId, setRequestId] = useState(null)
     const handleSubmit = async (request) => {
         console.log('Submitting request:', request);
         try {
             let response = await dispatch(createOrUpdateServiceRequest(request));
             if (response.success) {
+                setRequestId(response.data._id);
                 let mechanicsResponse = await dispatch(findMechanics(request.location, request.serviceType));
                 if (mechanicsResponse.success && mechanicsResponse.data.length > 0) {
                     setMechanics(mechanicsResponse.data);
@@ -33,7 +34,7 @@ const UserRequestPage = ({ navigation }) => {
     if (requestSubmitted && mechanics.length > 0) {
         return (
             <View style={{ flex: 1 }}>
-                <MechanicsListPage mechanics={mechanics} />
+                <MechanicsListPage mechanics={mechanics} requestId={requestId}  />
             </View>
         );
     }

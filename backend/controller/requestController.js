@@ -192,10 +192,11 @@ exports.findMechanics = async (req, res) => {
 // POST endpoint to assign a mechanic to a service request
 
 exports.assignMechanic = async (req, res) => {
-  const { serviceRequestId, mechanicId } = req.body;
+  const { requestId, mechanicId } = req.body;
+  console.log(requestId,mechanicId,"ids")
 
   try {
-    const serviceRequest = await ServiceRequest.findById(serviceRequestId);
+    const serviceRequest = await ServiceRequest.findById(requestId);
     if (!serviceRequest) {
       return res.status(404).json({ msg: "Service request not found" });
     }
@@ -209,7 +210,7 @@ exports.assignMechanic = async (req, res) => {
 
     // Optionally, you can also broadcast to a general channel if other parts of the application need to be aware
     io.emit("serviceRequestUpdated", {
-      serviceRequestId: serviceRequest._id,
+      requestId: serviceRequest._id,
       status: "assigned",
       mechanicId: mechanicId,
     });

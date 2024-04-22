@@ -33,7 +33,7 @@ const ProfilePage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Profile Details</Text>
+      {/* <Text style={styles.heading}>Profile Details</Text>
       {avatarURL && (
         <Image source={{ uri: avatarURL }} style={styles.avatar} />
       )}
@@ -64,7 +64,7 @@ const ProfilePage = ({ navigation }) => {
 
       <TouchableOpacity onPress={handleEditPress} style={styles.editButton}>
         <Text style={styles.editButtonText}>Edit Profile</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };

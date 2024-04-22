@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const ServiceRequestSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'user',
     required: true,
   },
   mechanic: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Profile',  // Assuming mechanic profiles are stored in 'Profile' model
+    ref: 'Profile',  
   },
   location: {
     type: String,

@@ -1,9 +1,14 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet, Button, Linking } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, Button, Linking, Alert } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { assignMechanic } from '../../../api/actions/requestActions'; // Import your action
+import socket from '../../../api/socket';
+import { assignMechanic } from '../../../api/actions/requestActions';
+
 
 const MechanicsListPage = ({ mechanics, requestId }) => {
+    
+   
+    console.log(requestId)
     const dispatch = useDispatch();
 
     const onOpenMap = (coordinates) => {
@@ -13,16 +18,32 @@ const MechanicsListPage = ({ mechanics, requestId }) => {
     };
 
     const handleAssignMechanic = (mechanicId) => {
-        // Dispatch the assignMechanic action with requestId and mechanicId
         dispatch(assignMechanic({ requestId, mechanicId }))
-            .then(() => {
-                alert("Request sent to mechanic successfully.");
+            .then((response) => {
+                if (response.success) {
+                    Alert.alert("Request Sent", "Request sent to mechanic successfully.");
+                }
             })
             .catch((error) => {
                 console.error("Failed to assign mechanic", error);
-                alert("Failed to send request to mechanic.");
+                Alert.alert("Error", "Failed to send request to mechanic.");
             });
     };
+
+    useEffect(() => {
+        socket.on('assignedRequest', (data) => {
+            Alert.alert('Assignment Notification', `A new request has been assigned: ${data.status}`);
+        });
+
+        socket.on('serviceRequestUpdated', (update) => {
+            console.log('Service Request Update:', update);
+        });
+
+        return () => {
+            socket.off('assignedRequest');
+            socket.off('serviceRequestUpdated');
+        };
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -36,20 +57,20 @@ const MechanicsListPage = ({ mechanics, requestId }) => {
                         <Text style={styles.detailLine}><Text style={styles.title}>Services: </Text>{item.typeOfService}</Text>
                         <Text style={styles.detailLine}><Text style={styles.title}>City: </Text>{item.city}</Text>
                         <Text style={styles.detailLine}><Text style={styles.title}>Address: </Text>{item.address}</Text>
-                        {item.location && (
-                            <View style={styles.mapButton}>
+                        <View style={styles.buttonRow}>
+                            {item.location && (
                                 <Button
                                     title="View on Map"
                                     onPress={() => onOpenMap(item.location.coordinates)}
                                     color="#007AFF"
                                 />
-                            </View>
-                        )}
-                        <Button
-                            title="Request This Mechanic"
-                            onPress={() => handleAssignMechanic(item._id)}
-                            color="#4CAF50" // A green color
-                        />
+                            )}
+                            <Button
+                                title="Request This Mechanic"
+                                onPress={() => handleAssignMechanic(item._id)}
+                                color="#4CAF50" // A green color
+                            />
+                        </View>
                     </View>
                 )}
             />
@@ -82,7 +103,6 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     detailLine: {
-        flexDirection: 'row',
         fontSize: 16,
         marginBottom: 5,
     },
@@ -90,8 +110,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
     },
-    mapButton: {
+    buttonRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between', // This spreads out the buttons
         marginTop: 5,
+    },
+    mapButton: {
+        marginRight: 10, // Optional: add some space between buttons
     }
 });
 

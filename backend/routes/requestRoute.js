@@ -26,6 +26,9 @@ router.post('/', [auth, [
     check('description', 'Description is required').not().isEmpty(),
 ]], createServiceRequest);
 
+
+router.put('/assign-mechanic', auth, assignMechanic);
+
 // GET all service requests for a user
 router.get('/', auth, getServiceRequests);
 
@@ -40,6 +43,5 @@ router.delete('/:id', auth, deleteServiceRequest);
 
 router.get('/history', auth, getRequestHistory);
 
-router.put('/assign-mechanic', auth, assignMechanic);
 
 module.exports = router;
