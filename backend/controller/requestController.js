@@ -44,10 +44,12 @@ exports.createServiceRequest = async (req, res) => {
 
 // Function to get all service requests assigned to a specific mechanic
 exports.getServiceRequests = async (req, res) => {
+  console.log('Fetching requests for user ID:', req.user.id);
+
   try {
     // Assuming `mechanicId` is stored in `req.user.id` if the user is a mechanic
     const serviceRequests = await ServiceRequest.find({
-      mechanic: req.user.id,
+mechanic: req.user.id,
     }).sort({ date: -1 });
 
     res.json(serviceRequests);

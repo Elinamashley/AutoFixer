@@ -34,7 +34,7 @@ const ServiceRequestForm = ({ onSubmit, requestLocationPermission }) => {
     };
 
     return (
-        <View>
+        <View style={styles.container}>
             <Text style={styles.header}>Service Request Form</Text>
             <TextInput
                 style={styles.input}
@@ -46,7 +46,7 @@ const ServiceRequestForm = ({ onSubmit, requestLocationPermission }) => {
             <Button
                 title="Fetch Location"
                 onPress={handleFetchLocation}
-                color="#062607"
+                color="#007bff"  // Use the custom blue color for the button
             />
             <TextInput
                 style={styles.input}
@@ -85,7 +85,7 @@ const ServiceRequestForm = ({ onSubmit, requestLocationPermission }) => {
             <Button
                 title="Submit Request"
                 onPress={() => onSubmit(request)}
-                color="#062607"
+                color="#062607"  // Use the custom green color for the button
             />
         </View>
     );
