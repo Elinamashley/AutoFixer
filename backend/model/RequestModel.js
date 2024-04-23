@@ -8,7 +8,7 @@ const ServiceRequestSchema = new mongoose.Schema({
   },
   mechanic: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Profile',  
+    ref: 'profile',  
   },
   location: {
     type: String,

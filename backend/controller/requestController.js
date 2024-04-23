@@ -30,17 +30,33 @@ exports.createServiceRequest = async (req, res) => {
 };
 
 // Function to get all service requests for a user
+// exports.getServiceRequests = async (req, res) => {
+//   try {
+//     const serviceRequests = await ServiceRequest.find({
+//       user: req.user.id,
+//     }).sort({ date: -1 });
+//     res.json(serviceRequests);
+//   } catch (error) {
+//     console.error("Get Service Requests Error:", error.message);
+//     res.status(500).send("Server Error");
+//   }
+// };
+
+// Function to get all service requests assigned to a specific mechanic
 exports.getServiceRequests = async (req, res) => {
   try {
+    // Assuming `mechanicId` is stored in `req.user.id` if the user is a mechanic
     const serviceRequests = await ServiceRequest.find({
-      user: req.user.id,
+      mechanic: req.user.id,
     }).sort({ date: -1 });
+
     res.json(serviceRequests);
   } catch (error) {
-    console.error("Get Service Requests Error:", error.message);
+    console.error("Get Assigned Requests Error:", error.message);
     res.status(500).send("Server Error");
   }
 };
+
 
 exports.getServiceRequestById = async (req, res) => {
   try {
@@ -193,7 +209,7 @@ exports.findMechanics = async (req, res) => {
 
 exports.assignMechanic = async (req, res) => {
   const { requestId, mechanicId } = req.body;
-  console.log(requestId,mechanicId,"ids")
+  console.log(requestId, mechanicId, "ids");
 
   try {
     const serviceRequest = await ServiceRequest.findById(requestId);
@@ -201,8 +217,9 @@ exports.assignMechanic = async (req, res) => {
       return res.status(404).json({ msg: "Service request not found" });
     }
 
+    // Updating the mechanic field and status to 'assigned'
     serviceRequest.mechanic = mechanicId;
-    serviceRequest.status = "pending";
+    serviceRequest.status = "assigned";  // Update status to 'assigned'
     await serviceRequest.save();
 
     // Emit event to specific mechanic and update any listeners about the new assignment

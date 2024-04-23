@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import styles from '../../styles/ServiceRequestForm';
 
 const ServiceRequestForm = ({ onSubmit, requestLocationPermission }) => {
     const [request, setRequest] = useState({
@@ -28,12 +29,23 @@ const ServiceRequestForm = ({ onSubmit, requestLocationPermission }) => {
         }));
     };
 
+    const handleFetchLocation = () => {
+        requestLocationPermission(location => handleChange('location', location));
+    };
+
     return (
         <View>
             <Text style={styles.header}>Service Request Form</Text>
+            <TextInput
+                style={styles.input}
+                placeholder="Location (e.g., 123 Main St)"
+                value={request.location}
+                onChangeText={text => handleChange('location', text)}
+                editable={false}  // Make it non-editable if you only want the button to set it
+            />
             <Button
                 title="Fetch Location"
-                onPress={() => requestLocationPermission((location) => handleChange('location', location))}
+                onPress={handleFetchLocation}
                 color="#062607"
             />
             <TextInput
@@ -78,35 +90,5 @@ const ServiceRequestForm = ({ onSubmit, requestLocationPermission }) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        textAlign: 'center'
-    },
-    input: {
-        height: 50,
-        marginBottom: 20,
-        borderWidth: 1,
-        padding: 10,
-        borderRadius: 5,
-        borderColor: '#ccc'
-    },
-    dateText: {
-        fontSize: 16,
-        padding: 10,
-        marginBottom: 20,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        textAlign: 'center'
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 10
-    }
-});
 
 export default ServiceRequestForm;

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import socket from '../../api/socket';  // Ensure this path is correct
 import { fetchCurrentUserProfile } from '../../api/actions/profileAction';
 import { fetchServiceRequests } from '../../api/actions/requestActions';
+import { addRequest } from '../redux/requestSlice';
 const RequestPage = ({ navigation }) => {
   const dispatch = useDispatch();
   const { profile, loading } = useSelector(state => state.profile);
@@ -20,6 +21,7 @@ const RequestPage = ({ navigation }) => {
 
       // Listen for 'assignedRequest' events from the server
       socket.on('assignedRequest', (newRequest) => {
+        dispatch(addRequest(newRequest));
           Alert.alert("New Request", "You have a new service request assigned to you!");
       });
 
@@ -140,147 +142,3 @@ export default RequestPage;
 
 
 
-// import React, {useEffect, useState} from 'react';
-// import {useDispatch, useSelector} from 'react-redux';
-// import {View, Text, StyleSheet, TouchableOpacity, FlatList,ActivityIndicator} from 'react-native';
-// import {fetchCurrentUserProfile} from '../../api/actions/profileAction';
-
-
-// const requestTypes = [
-//   'Air Condition Specialist',
-//   'Benz Mechanic',
-//   'Towing Service',
-//   'Vulcanizer',
-//   'MMW Mechanic',
-//   'Transmission Expert',
-//   'Auto Electrician',
-//   'Paint Specialist',
-//   'Wheel Alignment Expert',
-//   'Hybrid Vehicle Specialist',
-// ];
-
-
-
-// const RequestPage = ({navigation}) => {
-//   const dispatch = useDispatch();
-//   const {profile} = useSelector(state => state.profile);
-//   const { requests, loading, error } = useSelector(state => state.requestStore);
-//   console.log(requests,"prodile")
-
-//   useEffect(() => {
-//     dispatch(fetchCurrentUserProfile());
-//   }, [dispatch]);
-
-//   useEffect(() => {
-//     dispatch(fetchUserRequests('userId')); 
-//   }, [dispatch]);
-
-//   const handleAddProfilePress = () => {
-//     navigation.navigate('AddEditProfile');
-//   };
-
-//   if (loading) {
-//     return (
-//       <View style={styles.container}>
-//         <ActivityIndicator size="large" color="#0000ff" />
-//       </View>
-//     );
-//   }
-
-//   if (!profile) {
-//     return (
-//       <View style={styles.container}>
-//         <Text style={styles.noProfileText}>No Profile Yet.</Text>
-//         <TouchableOpacity
-//           style={styles.editButton}
-//           onPress={handleAddProfilePress}>
-//           <Text style={styles.editButtonText}>
-//             Click here to add a profile to continue
-//           </Text>
-//         </TouchableOpacity>
-//       </View>
-//     );
-//   }
-
-//   const renderItem = ({item}) => (
-//     <TouchableOpacity
-//       style={styles.itemContainer}
-//       onPress={() =>
-//         navigation.navigate('RequestDetails', { request: item })
-//       }>
-//       <Text style={styles.itemText}>
-//         {item.requestName} - {item.userName}
-//       </Text>
-//       <Text style={styles.itemSubText}>
-//         {item.requestType} - {item.location}
-//       </Text>
-//     </TouchableOpacity>
-//   );
-
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.heading}>Request Page</Text>
-//       <FlatList
-//         data={requests}
-//         renderItem={renderItem}
-//         keyExtractor={item => item.id.toString()}
-//         contentContainerStyle={styles.listContainer}
-//       />
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     padding: 10,
-//     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-//   },
-//   noProfileText: {
-//     fontSize: 18,
-//     color: 'white',
-//     textAlign: 'center',
-//     marginBottom: 15, 
-//     padding: 20,
-//   },
-//   editButton: {
-//     marginTop: 20,
-//     padding: 15,
-//     backgroundColor: '#062607',
-//     borderRadius: 5,
-//     alignItems: 'center',
-//   },
-//   editButtonText: {
-//     color: '#dedede',
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//   },
-//   heading: {
-//     fontSize: 24,
-//     fontWeight: 'bold',
-//     marginBottom: 20,
-//     color: 'white',
-//     textAlign: 'center',
-//   },
-//   listContainer: {
-//     paddingHorizontal: 10,
-//   },
-//   itemContainer: {
-//     backgroundColor: '#062607',
-//     padding: 10,
-//     borderRadius: 5,
-//     marginBottom: 10,
-//   },
-//   itemText: {
-//     color: 'white',
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//   },
-//   itemSubText: {
-//     color: 'lightgray',
-//     fontSize: 14,
-//   },
-// });
-
-// export default RequestPage;

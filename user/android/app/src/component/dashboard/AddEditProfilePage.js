@@ -1,18 +1,20 @@
-import { useDispatch } from 'react-redux';
-import { createOrUpdateProfile } from '../../api/actions/profileAction';
-import Toast from 'react-native-toast-message';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   View,
   Text,
   TextInput,
   Button,
-  StyleSheet,
   TouchableOpacity,
-  Alert,
+  Image,
   ScrollView,
+  ActivityIndicator
 } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { createOrUpdateProfile } from '../../api/actions/profileAction';
+import Toast from 'react-native-toast-message';
 import { requestLocationPermission } from '../../utils/requestPermision';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { launchImageLibrary } from 'react-native-image-picker';
+import styles from '../styles/AddEditProfilePageStyles';
 
 const AddEditProfilePage = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -24,6 +26,7 @@ const AddEditProfilePage = ({ navigation, route }) => {
     location: '',
     avatar: '',
   });
+  const [loading, setLoading] = useState(false); // New state for managing loading status
 
   useEffect(() => {
     if (route.params?.profile) {
@@ -44,9 +47,14 @@ const AddEditProfilePage = ({ navigation, route }) => {
     }));
   };
 
-  const handleFetchLocation = () => {
-    requestLocationPermission(location => handleInputChange('location', location));
+  const handleFetchLocation = async () => {
+    setLoading(true); // Start loading
+    await requestLocationPermission(location => {
+      handleInputChange('location', location);
+      setLoading(false); // Stop loading after location is fetched
+    });
   };
+
   const handleSelectImage = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
       if (response.assets && response.assets.length > 0) {
@@ -57,7 +65,7 @@ const AddEditProfilePage = ({ navigation, route }) => {
   };
 
   const handleSaveProfile = async () => {
-    console.log(formData,"the form data")
+    setLoading(true); // Start loading
     try {
       let response = await dispatch(createOrUpdateProfile(formData));
       if (response.success === true) {
@@ -70,15 +78,25 @@ const AddEditProfilePage = ({ navigation, route }) => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false); // Stop loading regardless of the outcome
     }
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.pageHeader}>
         {route.params?.profile ? 'Edit Your Profile' : 'Create Your Profile'}
       </Text>
-      
+
       {formData.avatar ? (
         <Image source={{ uri: formData.avatar }} style={styles.avatar} />
       ) : null}
@@ -119,57 +137,15 @@ const AddEditProfilePage = ({ navigation, route }) => {
         onChangeText={text => handleInputChange('location', text)}
         placeholder="Location (Optional)"
       />
-      <Button title="Fetch Location" onPress={handleFetchLocation} color="#062607" />
-      <TouchableOpacity style={styles.button} onPress={handleSaveProfile}>
-        <Text style={styles.buttonText}>Save Profile</Text>
-      </TouchableOpacity>
-    </View>
+
+      <View style={styles.buttonRow}>
+        <Button title="Fetch Location" onPress={handleFetchLocation} color="#007AFF" />
+        <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile}>
+          <Text style={styles.saveButtonText}>Save Profile</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  pageHeader: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#000',
-    textAlign: 'center',
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  button: {
-    backgroundColor: '#062607',
-    padding: 10,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: 'white',
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    alignSelf: 'center',
-    marginBottom: 20,
-  },
-  imageButton: {
-    backgroundColor: '#007bff',
-    padding: 10,
-    marginBottom: 20,
-    alignSelf: 'center',
-  },
-  imageButtonText: {
-    color: 'white',
-  },
-});
 
 export default AddEditProfilePage;

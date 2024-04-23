@@ -1,4 +1,4 @@
-import { addRequest, deleteRequest, setMechanics, setRequest,  setRequestLoading,  setRequestSuccess, updateRequest } from "../../component/redux/requestSlice";
+import { addRequest, deleteRequest, setMechanics, setRequest,  setRequestFail,  setRequestLoading,  setRequestSuccess, updateRequest } from "../../component/redux/requestSlice";
 import apiErrorHandler from "../../utils/apiErrorHandler";
 import api from "../api";
 
@@ -19,25 +19,36 @@ export const createOrUpdateServiceRequest = (requestData) => async (dispatch) =>
 
 // Action to fetch all service requests for the current user
 export const fetchServiceRequests = () => async (dispatch) => {
-    dispatch(setRequestLoading());
-    try {
-      const response = await api.get("/requests");
-      dispatch(setRequestSuccess(response.data)); // Load all service requests into state
-      return { success: true, data: response.data };
-    } catch (error) {
-      apiErrorHandler(dispatch, error);
-      return { success: false };
-    } finally {
-      dispatch(setRequestLoading(false));
+  dispatch(setRequestLoading());
+  try {
+    const response = await api.get("/requests");
+    console.log(response.data, "API Response Data"); // Make sure this logs the expected array
+
+    // Assuming the response data is directly the array of requests
+    if (response.data && Array.isArray(response.data)) {
+      dispatch(setRequestSuccess(response.data));
+    } else {
+      console.error("Unexpected data structure:", response.data);
+      dispatch(setRequestFail("Unexpected data structure"));
     }
+
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error("API Error:", error);
+    dispatch(setRequestFail(error.toString()));
+    return { success: false };
+  } finally {
+    dispatch(setRequestLoading(false));
+  }
 };
+
 
 // Action to fetch a specific service request by ID
 export const fetchServiceRequestById = (id) => async (dispatch) => {
     dispatch(setRequestLoading());
     try {
       const response = await api.get(`/requests/${id}`);
-      dispatch(setRequest(response.data)); // Set the current service request in the state
+      dispatch(setRequest(response.data)); 
       return { success: true, data: response.data };
     } catch (error) {
       apiErrorHandler(dispatch, error);

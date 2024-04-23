@@ -17,8 +17,9 @@ const ProfilePage = ({ navigation }) => {
     dispatch(fetchCurrentUserProfile());
   }, [dispatch]);
 
-  const avatarURL = profile?.user?.avatar?.split(' ')[0]; // Cleaner optional chaining
-
+  const avatarURL = profile?.user?.avatar?.split(' ')[0]; 
+  const coordinates = profile?.location?.coordinates?.join(', ') || 'No location specified'; // Join coordinates as a string
+ 
   if (!profile) {
     return (
       <View style={styles.noProfileContainer}>
@@ -33,7 +34,7 @@ const ProfilePage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* <Text style={styles.heading}>Profile Details</Text>
+      <Text style={styles.heading}>Profile Details</Text>
       {avatarURL && (
         <Image source={{ uri: avatarURL }} style={styles.avatar} />
       )}
@@ -59,12 +60,12 @@ const ProfilePage = ({ navigation }) => {
 
       <View style={styles.detailContainer}>
         <Text style={styles.label}>Location:</Text>
-        <Text style={styles.value}>{profile.location}</Text>
+        <Text style={styles.value}>{coordinates}</Text>
       </View>
 
       <TouchableOpacity onPress={handleEditPress} style={styles.editButton}>
         <Text style={styles.editButtonText}>Edit Profile</Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </View>
   );
 };
