@@ -5,7 +5,7 @@ import { appStyles } from './appStyles';
 import NavigationContainerWrapper from './android/app/src/component/navigation/Navigation';
 import store from './android/app/src/component/redux/store';
 import { Provider } from 'react-redux';
-
+ 
 
 function App() {
   return (
